@@ -116,10 +116,14 @@ window.addEventListener('resize', () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
-// Camera
+// Camera &Group
+const cameraGroup = new THREE.Group();
+scene.add(cameraGroup);
+
+// base camera
 const camera = new THREE.PerspectiveCamera(35, sizes.width / sizes.height, 0.1, 100);
 camera.position.z = 6;
-scene.add(camera);
+cameraGroup.add(camera);
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({ 
@@ -160,15 +164,15 @@ const animLoop = () => {
         mesh.rotation.y = elapsedTime * 0.12;
     });
 
-    // camera scroll motion
+    // scroll motion on camera
     // formula to match viewport scroll to next object in camera
     camera.position.y = -scrollY / sizes.height * objectsDistance;
 
-    // parralax motion
+    // parralax motion on camera group
     const parallaxX = cursor.x;
     const parallaxY = -cursor.y;
-    camera.position.x = parallaxX;
-    camera.position.y = parallaxY;
+    cameraGroup.position.x = parallaxX;
+    cameraGroup.position.y = parallaxY;
 
     // call again on the next frame
     renderer.render(scene, camera);

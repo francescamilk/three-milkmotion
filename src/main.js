@@ -12,6 +12,7 @@ gui
     .name('Material color')
     .onChange(() => {
         material.color.set(props.materialColor);
+        particlesMaterial.color.set(props.materialColor);
     });
 
 // toggle gui visibility
@@ -27,7 +28,8 @@ const canvas = document.querySelector('canvas#webgl');
 // Scene
 const scene = new THREE.Scene();
 
-// Textures & Materials
+// Meshes
+// textures & materials
 const textureLoader   = new THREE.TextureLoader();
 const gradientTexture = textureLoader.load('textures/gradients/3.jpg');
 gradientTexture.magFilter = THREE.NearestFilter;
@@ -37,7 +39,7 @@ const material = new THREE.MeshToonMaterial({
     gradientMap: gradientTexture
 });
 
-// Meshes
+// objects
 const torus = new THREE.Mesh(
     new THREE.TorusGeometry(1, 0.4, 16, 60),
     material
@@ -53,20 +55,45 @@ const knot  = new THREE.Mesh(
     material
 );
 
-scene.add(torus, cone, knot);
-const meshes = [ torus, cone, knot ];
-
 // position objects
-const objectsDistance = 4;
+const meshes = [ torus, cone, knot ];
+const objDistance = 4;
 
 torus.position.x = 2;
-torus.position.y = -objectsDistance * 0;
+torus.position.y = -objDistance * 0;
 
 cone.position.x  = - 2;
-cone.position.y  = -objectsDistance * 1;
+cone.position.y  = -objDistance * 1;
 
 knot.position.x  = 2;
-knot.position.y  = -objectsDistance * 2;
+knot.position.y  = -objDistance * 2;
+
+scene.add(torus, cone, knot);
+
+// Particles
+const particlesCount = 200;
+const positions      = new Float32Array(particlesCount * 3);
+
+for(let i = 0; i < particlesCount; i++) {
+    positions[i * 3 + 0] = (Math.random() - 0.5) * 10;
+    positions[i * 3 + 1] = objDistance * 0.5 - Math.random() * objDistance * meshes.length;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+}
+
+const particlesGeometry = new THREE.BufferGeometry();
+particlesGeometry.setAttribute(
+    'position', new THREE.BufferAttribute(positions, 3)
+);
+
+// particles material
+const particlesMaterial = new THREE.PointsMaterial({
+    color: props.materialColor,
+    sizeAttenuation: true,
+    size: 0.03
+});
+
+const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+scene.add(particles);
 
 // Lights
 const directionalLight = new THREE.DirectionalLight('#ffffff', 3);
@@ -169,7 +196,7 @@ const animLoop   = () => {
 
     // scroll motion on camera
     // formula to match viewport scroll to next object in camera
-    camera.position.y = -scrollY / sizes.height * objectsDistance;
+    camera.position.y = -scrollY / sizes.height * objDistance;
 
     // parralax motion on camera group &ease
     const parallaxX = cursor.x * 0.6;

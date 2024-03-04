@@ -59,8 +59,13 @@ const meshes = [ torus, cone, knot ];
 // position objects
 const objectsDistance = 4;
 
+torus.position.x = 2;
 torus.position.y = -objectsDistance * 0;
+
+cone.position.x  = - 2;
 cone.position.y  = -objectsDistance * 1;
+
+knot.position.x  = 2;
 knot.position.y  = -objectsDistance * 2;
 
 // Lights
@@ -96,6 +101,7 @@ const sizes = {
     height: window.innerHeight
 };
 
+// handle resize
 window.addEventListener('resize', () => {
     // update sizes
     sizes.width  = window.innerWidth;
@@ -124,6 +130,13 @@ renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 // renderer.setClearAlpha(0);
 
+// Scroll motion
+let scrollY = window.scrollY;
+
+window.addEventListener('scroll', () => {
+    scrollY = window.scrollY;
+});
+
 // Animate
 const clock    = new THREE.Clock();
 const animLoop = () => {
@@ -134,6 +147,10 @@ const animLoop = () => {
         mesh.rotation.x = elapsedTime * 0.1;
         mesh.rotation.y = elapsedTime * 0.12;
     });
+
+    // camera scroll motion
+    // formula to match viewport scroll to next object in camera
+    camera.position.y = -scrollY / sizes.height * objectsDistance;
 
     // call again on the next frame
     renderer.render(scene, camera);

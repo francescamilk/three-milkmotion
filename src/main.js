@@ -30,6 +30,7 @@ const scene = new THREE.Scene();
 // Textures & Materials
 const textureLoader   = new THREE.TextureLoader();
 const gradientTexture = textureLoader.load('textures/gradients/3.jpg');
+gradientTexture.magFilter = THREE.NearestFilter;
 
 const material = new THREE.MeshToonMaterial({ 
     color: props.materialColor,
@@ -37,22 +38,30 @@ const material = new THREE.MeshToonMaterial({
 });
 
 // Meshes
-const mesh1 = new THREE.Mesh(
+const torus = new THREE.Mesh(
     new THREE.TorusGeometry(1, 0.4, 16, 60),
     material
 );
 
-const mesh2 = new THREE.Mesh(
+const cone  = new THREE.Mesh(
     new THREE.ConeGeometry(1, 2, 32),
     material
 );
 
-const mesh3 = new THREE.Mesh(
+const knot  = new THREE.Mesh(
     new THREE.TorusKnotGeometry(0.8, 0.35, 100, 16),
     material
 );
 
-scene.add(mesh1, mesh2, mesh3);
+scene.add(torus, cone, knot);
+const meshes = [ torus, cone, knot ];
+
+// position objects
+const objectsDistance = 4;
+
+torus.position.y = -objectsDistance * 0;
+cone.position.y  = -objectsDistance * 1;
+knot.position.y  = -objectsDistance * 2;
 
 // Lights
 const directionalLight = new THREE.DirectionalLight('#ffffff', 3);
@@ -68,17 +77,17 @@ gui
 
 gui
     .add(directionalLight.position, 'x')
-    .min(- 5).max(5).step(0.001)
+    .min(-5).max(5).step(0.001)
     .name('Directional lights x');
 
 gui
     .add(directionalLight.position, 'y')
-    .min(- 5).max(5).step(0.001)
+    .min(-5).max(5).step(0.001)
     .name('Directional lights y');
 
 gui
     .add(directionalLight.position, 'z')
-    .min(- 5).max(5).step(0.001)
+    .min(-5).max(5).step(0.001)
     .name('Directional lights z');
 
 // Window
@@ -113,13 +122,19 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
 // renderer.setClearAlpha(0);
 
 // Animate
-// const clock    = new THREE.Clock();
+const clock    = new THREE.Clock();
 const animLoop = () => {
-    // const elapsedTime = clock.getElapsedTime();
+    const elapsedTime = clock.getElapsedTime();
+
+    // rotate meshes
+    meshes.forEach((mesh) => {
+        mesh.rotation.x = elapsedTime * 0.1;
+        mesh.rotation.y = elapsedTime * 0.12;
+    });
+
     // call again on the next frame
     renderer.render(scene, camera);
     window.requestAnimationFrame(animLoop);

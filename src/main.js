@@ -132,7 +132,6 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-// renderer.setClearAlpha(0);
 
 // Scroll motion
 let scrollY = window.scrollY;
@@ -154,9 +153,13 @@ window.addEventListener('mousemove', (e) => {
 });
 
 // Animate
-const clock    = new THREE.Clock();
-const animLoop = () => {
+let previousTime = 0;
+const clock      = new THREE.Clock();
+const animLoop   = () => {
     const elapsedTime = clock.getElapsedTime();
+    const deltaTime = elapsedTime - previousTime;
+    previousTime    = elapsedTime;
+
 
     // rotate meshes
     meshes.forEach((mesh) => {
@@ -168,11 +171,11 @@ const animLoop = () => {
     // formula to match viewport scroll to next object in camera
     camera.position.y = -scrollY / sizes.height * objectsDistance;
 
-    // parralax motion on camera group
-    const parallaxX = cursor.x;
-    const parallaxY = -cursor.y;
-    cameraGroup.position.x = parallaxX;
-    cameraGroup.position.y = parallaxY;
+    // parralax motion on camera group &ease
+    const parallaxX = cursor.x * 0.6;
+    const parallaxY = -cursor.y * 0.6;
+    cameraGroup.position.x += (parallaxX - cameraGroup.position.x) * 4 * deltaTime;
+    cameraGroup.position.y += (parallaxY - cameraGroup.position.y) * 4 * deltaTime;
 
     // call again on the next frame
     renderer.render(scene, camera);

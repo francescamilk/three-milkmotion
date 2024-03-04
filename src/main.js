@@ -137,6 +137,18 @@ window.addEventListener('scroll', () => {
     scrollY = window.scrollY;
 });
 
+// Parallax motion
+const cursor = {
+    x: 0,
+    y: 0
+};
+
+window.addEventListener('mousemove', (e) => {
+    // stabilise values in -0.5 - 0.5 ranges
+    cursor.x = e.clientX / sizes.width - 0.5;
+    cursor.y = e.clientY / sizes.height - 0.5;
+});
+
 // Animate
 const clock    = new THREE.Clock();
 const animLoop = () => {
@@ -151,6 +163,12 @@ const animLoop = () => {
     // camera scroll motion
     // formula to match viewport scroll to next object in camera
     camera.position.y = -scrollY / sizes.height * objectsDistance;
+
+    // parralax motion
+    const parallaxX = cursor.x;
+    const parallaxY = -cursor.y;
+    camera.position.x = parallaxX;
+    camera.position.y = parallaxY;
 
     // call again on the next frame
     renderer.render(scene, camera);

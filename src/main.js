@@ -3,12 +3,18 @@ import GUI from 'lil-gui';
 
 // Debugger init
 const gui    = new GUI();
-const params = {
+const props = {
     materialColor: '#ffeded'
 };
-gui.addColor(params, 'materialColor');
 
-// toggle gui controls
+gui
+    .addColor(props, 'materialColor')
+    .name('Material color')
+    .onChange(() => {
+        material.color.set(props.materialColor);
+    });
+
+// toggle gui visibility
 window.addEventListener('keydown', (e) => {
     if(e.key === 'h')
         gui.show(gui._hidden);
@@ -20,30 +26,52 @@ const canvas = document.querySelector('canvas#webgl');
 // Scene
 const scene = new THREE.Scene();
 
-// Objects    REF(test cube)
-const cube = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshBasicMaterial({ color: '#ff0000' })
-);
-scene.add(cube);
+// Meshes & Materials
+const material = new THREE.MeshToonMaterial({ color: props.materialColor });
 
-// Meshes
 const mesh1 = new THREE.Mesh(
     new THREE.TorusGeometry(1, 0.4, 16, 60),
-    new THREE.MeshBasicMaterial({ color: '#ff0000' })
+    material
 );
 
 const mesh2 = new THREE.Mesh(
     new THREE.ConeGeometry(1, 2, 32),
-    new THREE.MeshBasicMaterial({ color: '#ff0000' })
+    material
 );
 
 const mesh3 = new THREE.Mesh(
     new THREE.TorusKnotGeometry(0.8, 0.35, 100, 16),
-    new THREE.MeshBasicMaterial({ color: '#ff0000' })
+    material
 );
 
 scene.add(mesh1, mesh2, mesh3);
+
+// Lights
+const directionalLight = new THREE.DirectionalLight('#ffffff', 3);
+directionalLight.position.set(1, 1, 0);
+
+scene.add(directionalLight);
+
+// &plug debugger
+gui
+    .add(directionalLight, 'intensity')
+    .min(0).max(5).step(0.001)    
+    .name('Directional lights intensity');
+
+gui
+    .add(directionalLight.position, 'x')
+    .min(- 5).max(5).step(0.001)
+    .name('Directional lights x');
+
+gui
+    .add(directionalLight.position, 'y')
+    .min(- 5).max(5).step(0.001)
+    .name('Directional lights y');
+
+gui
+    .add(directionalLight.position, 'z')
+    .min(- 5).max(5).step(0.001)
+    .name('Directional lights z');
 
 // Window
 const sizes = {

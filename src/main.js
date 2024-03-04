@@ -4,7 +4,7 @@ import GUI from 'lil-gui';
 // Debugger init
 const gui    = new GUI();
 const props = {
-    materialColor: '#ffeded'
+    materialColor: '#6a6496'
 };
 
 gui
@@ -15,6 +15,7 @@ gui
     });
 
 // toggle gui visibility
+gui.hide();
 window.addEventListener('keydown', (e) => {
     if(e.key === 'h')
         gui.show(gui._hidden);
@@ -26,9 +27,16 @@ const canvas = document.querySelector('canvas#webgl');
 // Scene
 const scene = new THREE.Scene();
 
-// Meshes & Materials
-const material = new THREE.MeshToonMaterial({ color: props.materialColor });
+// Textures & Materials
+const textureLoader   = new THREE.TextureLoader();
+const gradientTexture = textureLoader.load('textures/gradients/3.jpg');
 
+const material = new THREE.MeshToonMaterial({ 
+    color: props.materialColor,
+    gradientMap: gradientTexture
+});
+
+// Meshes
 const mesh1 = new THREE.Mesh(
     new THREE.TorusGeometry(1, 0.4, 16, 60),
     material

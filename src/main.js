@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import GUI from 'lil-gui';
+import gsap from 'gsap';
 
 // Debugger init
-const gui    = new GUI();
+const gui   = new GUI();
 const props = {
     materialColor: '#6a6496'
 };
@@ -74,12 +75,14 @@ scene.add(torus, cone, knot);
 const particlesCount = 200;
 const positions      = new Float32Array(particlesCount * 3);
 
+// populate 32array
 for(let i = 0; i < particlesCount; i++) {
     positions[i * 3 + 0] = (Math.random() - 0.5) * 10;
     positions[i * 3 + 1] = objDistance * 0.5 - Math.random() * objDistance * meshes.length;
     positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
 }
 
+// objects
 const particlesGeometry = new THREE.BufferGeometry();
 particlesGeometry.setAttribute(
     'position', new THREE.BufferAttribute(positions, 3)
@@ -128,7 +131,6 @@ const sizes = {
     height: window.innerHeight
 };
 
-// handle resize
 window.addEventListener('resize', () => {
     // update sizes
     sizes.width  = window.innerWidth;
@@ -161,10 +163,29 @@ renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 // Scroll motion
-let scrollY = window.scrollY;
+let scrollY     = window.scrollY;
+let currSection = 0;
 
 window.addEventListener('scroll', () => {
+    // update scroll value
     scrollY = window.scrollY;
+
+    // update current section
+    const section = Math.round(scrollY / sizes.height);
+    if (currSection !== section) {
+        currSection = section;
+        
+        gsap.to(
+            meshes[currSection].rotation,
+            {
+                duration: 1.5,
+                ease: 'power2.inOut',
+                x: '+=6',
+                y: '+=3',
+                z: "+=1.5"
+            }
+        );
+    }
 });
 
 // Parallax motion
@@ -183,15 +204,15 @@ window.addEventListener('mousemove', (e) => {
 let previousTime = 0;
 const clock      = new THREE.Clock();
 const animLoop   = () => {
+    // set time helpers
     const elapsedTime = clock.getElapsedTime();
-    const deltaTime = elapsedTime - previousTime;
-    previousTime    = elapsedTime;
-
+    const deltaTime   = elapsedTime - previousTime;
+    previousTime      = elapsedTime;
 
     // rotate meshes
     meshes.forEach((mesh) => {
-        mesh.rotation.x = elapsedTime * 0.1;
-        mesh.rotation.y = elapsedTime * 0.12;
+        mesh.rotation.x += deltaTime * 0.1;
+        mesh.rotation.y += deltaTime * 0.12;
     });
 
     // scroll motion on camera

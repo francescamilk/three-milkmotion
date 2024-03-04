@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Micro+5&display=swap');
+
 * {
     margin: 0;
     padding: 0;
@@ -6,6 +8,8 @@
 html,
 body {
     background: #04060a;
+    color: #ffeded;
+    font-family: "Micro 5", sans-serif;
 }
 
 #webgl {
@@ -18,14 +22,12 @@ body {
 .section {
     display: flex;
     align-items: center;
-    height: 100vh;
     position: relative;
-    font-family: 'Cabin', sans-serif;
-    color: #ffeded;
     text-transform: uppercase;
-    font-size: 7vmin;
-    padding-left: 10%;
+    font-size: 12vmin;
+    height: 100vh;
     padding-right: 10%;
+    padding-left: 10%;
 }
 
 section:nth-child(odd) {

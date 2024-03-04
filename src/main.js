@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import GUI from 'lil-gui';
-import gsap from 'gsap';
+// import gsap from 'gsap';
 
 // Debugger init
 const gui   = new GUI();
@@ -175,16 +175,16 @@ window.addEventListener('scroll', () => {
     if (currSection !== section) {
         currSection = section;
         
-        gsap.to(
-            meshes[currSection].rotation,
-            {
-                duration: 1.5,
-                ease: 'power2.inOut',
-                x: '+=6',
-                y: '+=3',
-                z: "+=1.5"
-            }
-        );
+        // gsap.to(
+        //     meshes[currSection].rotation,
+        //     {
+        //         duration: 1.5,
+        //         ease: 'power2.inOut',
+        //         x: '+=6',
+        //         y: '+=3',
+        //         z: "+=1.5"
+        //     }
+        // );
     }
 });
 

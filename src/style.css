@@ -12,6 +12,15 @@ body {
     font-family: "Micro 5", sans-serif;
 }
 
+h1, 
+h2 {
+    text-shadow: rgb(255 255 255) 1px 0 3px;
+}
+
+h6 {
+    text-shadow: rgb(255 255 255) 1px 0 2px;
+}
+
 #webgl {
     position: fixed;
     top: 0;
